@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "gimbal.h": "c",
+        "motor.h": "c",
+        "vofa.h": "c",
+        "imu.h": "c",
+        "can_receive.h": "c",
+        "remote_control.h": "c",
+        "struct_typedef.h": "c"
+    }
+}
