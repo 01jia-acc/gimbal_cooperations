@@ -27,6 +27,18 @@
 #define calibration_gimbal 0x01 //第一位校准标志位
 extern uint8_t   GIMBAL_OFFSET_FLAG; //标志位组
 
+//中值
+#define INIT_YAW_SET    0.0f
+#define INIT_PITCH_SET  0.0f
+
+//云台初始化回中值，允许的误差,并且在误差范围内停止一段时间以及最大时间6s后解除初始化状态，
+#define GIMBAL_INIT_ANGLE_ERROR     0.1f
+#define GIMBAL_INIT_STOP_TIME       100
+#define GIMBAL_INIT_TIME            6000
+#define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
+
+
+
 typedef struct
 {
     fp32 kp;
@@ -104,5 +116,10 @@ typedef struct
   */
  extern void Gimbal_task(void);
 
-
+static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch);
+// 先声明函数（告诉编译器函数的签名）
+void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add_yaw,float *add_pitch);
+// 再声明其他函数（如 gimbal_calibration）
+void gimbal_detact_calibration(gimbal_control_t *gimbal_motor_t);
+//float temp=local_rc_ctrl->rc.ch[0];
 

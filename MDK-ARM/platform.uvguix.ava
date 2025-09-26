@@ -3684,8 +3684,8 @@
       <Doc>
         <Name>..\Core\Instance\Gimbal.c</Name>
         <ColumnNumber>0</ColumnNumber>
-        <TopLine>70</TopLine>
-        <CurrentLine>99</CurrentLine>
+        <TopLine>1</TopLine>
+        <CurrentLine>27</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
@@ -3746,9 +3746,9 @@
       </Doc>
       <Doc>
         <Name>../Core/Instance/Gimbal.h</Name>
-        <ColumnNumber>6</ColumnNumber>
-        <TopLine>38</TopLine>
-        <CurrentLine>71</CurrentLine>
+        <ColumnNumber>4</ColumnNumber>
+        <TopLine>39</TopLine>
+        <CurrentLine>72</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
