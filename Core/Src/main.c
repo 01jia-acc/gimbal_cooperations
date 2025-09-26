@@ -58,7 +58,7 @@ uint8_t a;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-// a test!!!
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
