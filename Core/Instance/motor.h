@@ -2,6 +2,7 @@
 #define __MOTOR_H
 #include "main.h"
 #include "config.h"
+#include "struct_typedef.h"
 //接收电机结构体
 typedef struct 
 {

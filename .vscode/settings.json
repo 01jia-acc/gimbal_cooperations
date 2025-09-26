@@ -6,6 +6,7 @@
         "imu.h": "c",
         "can_receive.h": "c",
         "remote_control.h": "c",
-        "struct_typedef.h": "c"
+        "struct_typedef.h": "c",
+        "config.h": "c"
     }
 }

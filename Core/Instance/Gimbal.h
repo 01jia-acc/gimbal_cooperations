@@ -19,6 +19,13 @@
 #define MOTOR_ECD_TO_RAD 0.000766990394f //      2*  PI  /8192
 #endif
 
+//对 GIMBAL_OFFSET_FLAG 的位的操作
+#define GIMBAL_FLAG_SET(FLAG)   GIMBAL_OFFSET_FLAG|=FLAG                //标志位置1
+#define GIMBAL_FLAG_RESET(FLAG) GIMBAL_OFFSET_FLAG&=~FLAG               //标志位值0
+#define GIMBAL_GET_FLAG(FLAG)   (GIMBAL_OFFSET_FLAG&FLAG)==FLAG ? 1 : 0  //获取标志位状态
+
+#define calibration_gimbal 0x01 //第一位校准标志位
+extern uint8_t   GIMBAL_OFFSET_FLAG; //标志位组
 
 typedef struct
 {
