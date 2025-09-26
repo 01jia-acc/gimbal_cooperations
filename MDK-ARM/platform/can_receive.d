@@ -36,3 +36,4 @@ platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex
 platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 platform\can_receive.o: ..\Core\Instance\motor.h
 platform\can_receive.o: ../Core/Inc/config.h
+platform\can_receive.o: ..\Core\Instance\struct_typedef.h

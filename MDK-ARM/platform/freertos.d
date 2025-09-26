@@ -50,8 +50,8 @@ platform\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_gr
 platform\freertos.o: ../Core/Instance/CAN_receive.h
 platform\freertos.o: ../Core/Instance/motor.h
 platform\freertos.o: ../Core/Inc/config.h
+platform\freertos.o: ../Core/Instance/struct_typedef.h
 platform\freertos.o: ../Core/Instance/Gimbal.h
 platform\freertos.o: ../Core/Instance/CAN_receive.h
-platform\freertos.o: ../Core/Instance/struct_typedef.h
 platform\freertos.o: ../Core/Instance/remote_control.h
 platform\freertos.o: ../Core/Instance/bsp_rc.h

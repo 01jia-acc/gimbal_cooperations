@@ -8,12 +8,12 @@
 
 uint8_t   GIMBAL_OFFSET_FLAG=1; //云台标志位
 gimbal_control_t gimbal_control;
-static void gimbal_feedback_update(gimbal_control_t *feedback_update);
+static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch);
 // 先声明函数（告诉编译器函数的签名）
-void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add);
+void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add_yaw,float *add_pitch);
 // 再声明其他函数（如 gimbal_calibration）
-void gimbal_calibration(gimbal_control_t *gimbal_motor_t);
-float temp=local_rc_ctrl->rc.ch[0];
+void gimbal_detact_calibration(gimbal_control_t *gimbal_motor_t);
+//float temp=local_rc_ctrl->rc.ch[0];
 void Gimbal_task(void){
 //等待陀螺仪任务更新陀螺仪数据
     //wait a time
@@ -21,55 +21,15 @@ void Gimbal_task(void){
 
     while (1)
     {
-        gimbal_feedback_update(&gimbal_control);
-        gimbal_detact(&gimbal_control);
-        gimbal_angle_limit(&gimbal_control,&temp);
+        gimbal_feedback_update(&gimbal_control,0,0);
+        gimbal_detact_calibration(&gimbal_control);
+        gimbal_angle_limit(&gimbal_control,0,0);
+        //以absolute_angle_set为目标值，absolute_angle（既motor_chassis[0].ecd）为当前值，进行pid串级环的运算，并将值存到motor_ready[0]结构体中
 
     }
     
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // static float tar_pitch;
-    // static float tar_yaw;
-    // tar_pitch=local_rc_ctrl->rc.ch[0];
-    // tar_yaw=local_rc_ctrl->rc.ch[1];
-    // Bounded_angle(tar_pitch,0,0);
-    // Bounded_angle(tar_yaw,0,0);
-    // MotorSetTar(motor_ready[0],tar_pitch,ABS);
-    // MotorSetTar(motor_ready[1],tar_yaw,ABS);
 
 }
 /**
@@ -101,19 +61,19 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_yaw_motor.absolute_angle_set=feedback_update->gimbal_yaw_motor.absolute_angle+*add_yaw;
 
     //计算设置角度后的目标角度与中值的相对角度，并以此为标准，因为最大和最小限幅值也是根据相对角度来定的，这样避免目标角度出现负值
-    feedback_update->gimbal_pitch_motor.absolute_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.absolute_angle_set,0);
-    feedback_update->gimbal_yaw_motor.absolute_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.absolute_angle_set,0);
+    feedback_update->gimbal_pitch_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.absolute_angle_set,0);
+    feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.absolute_angle_set,0);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
-    if(feedback_update->gimbal_pitch_motor.absolute_angle_set-PITCH_Limit_Hight>0)
-    feedback_update->gimbal_pitch_motor.relative_angle=fabs(feedback_update->gimbal_pitch_motor.absolute_angle_set-PITCH_Limit_Hight);
-    else if(feedback_update->gimbal_pitch_motor.absolute_angle_set-PITCH_Limit_Hight<0)
-    feedback_update->gimbal_pitch_motor.relative_angle=fabs(feedback_update->gimbal_pitch_motor.absolute_angle_set-PITCH_Limit_Low);
+    if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight>0)
+    feedback_update->gimbal_pitch_motor.relative_angle=fabs(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight);
+    else if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight<0)
+    feedback_update->gimbal_pitch_motor.relative_angle=fabs(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Low);
 
-    if(feedback_update->gimbal_yaw_motor.absolute_angle_set-YAW_Limit_Hight>0)
-    feedback_update->gimbal_yaw_motor.relative_angle=fabs(feedback_update->gimbal_yaw_motor.absolute_angle_set-YAW_Limit_Hight);
-    else if(feedback_update->gimbal_yaw_motor.absolute_angle_set-YAW_Limit_Hight<0)
-    feedback_update->gimbal_yaw_motor.relative_angle=fabs(feedback_update->gimbal_yaw_motor.absolute_angle_set-YAW_Limit_Low);
+    if(feedback_update->gimbal_yaw_motor.relative_angle_set-YAW_Limit_Hight>0)
+    feedback_update->gimbal_yaw_motor.relative_angle=fabs(feedback_update->gimbal_yaw_motor.relative_angle_set-YAW_Limit_Hight);
+    else if(feedback_update->gimbal_yaw_motor.relative_angle_set-YAW_Limit_Hight<0)
+    feedback_update->gimbal_yaw_motor.relative_angle=fabs(feedback_update->gimbal_yaw_motor.relative_angle_set-YAW_Limit_Low);
 
 
 }
@@ -121,10 +81,9 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
     //添加标志位判断有无执行过归中，如果有，则不再归中
     if(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
-        
-    MotorSetTar(motor_ready[0], 0.0f, ABS);  
-    MotorSetTar(motor_ready[1], 0.0f, ABS);
-    GIMBAL_FLAG_RESET(GIMBAL_OFFSET_FLAG);
+        MotorSetTar(motor_ready[0], 0.0f, ABS);  
+        MotorSetTar(motor_ready[1], 0.0f, ABS);
+        GIMBAL_FLAG_RESET(GIMBAL_OFFSET_FLAG);
     }
 
 
@@ -136,16 +95,28 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
 
 
 //云台限幅
-void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add){
-	 if (gimbal_motort == NULL || add == NULL) {
+void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *add_pitch){
+	 if (gimbal_motort == NULL || add_pitch == NULL||add_yaw==NULL) {
         return;
     }
-	 
-    if(*add>0&&gimbal_motort->gimbal_pitch_motor.relative_angle-*add<0){
-        *add=gimbal_motort->gimbal_pitch_motor.relative_angle;
-    }else if(*add<0&&gimbal_motort->gimbal_pitch_motor.relative_angle+*add<0){
-        *add=-gimbal_motort->gimbal_pitch_motor.relative_angle;
+	 //pitch
+    if(*add_pitch>0&&gimbal_motort->gimbal_pitch_motor.relative_angle-*add_pitch<0){
+        *add_pitch=gimbal_motort->gimbal_pitch_motor.relative_angle;
+        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
+    }else if(*add_pitch<0&&gimbal_motort->gimbal_pitch_motor.relative_angle+*add_pitch<0){
+        *add_pitch=-gimbal_motort->gimbal_pitch_motor.relative_angle;
+        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
     }    
+
+    //yaw
+    if(*add_yaw>0&&gimbal_motort->gimbal_yaw_motor.relative_angle-*add_yaw<0){
+        *add_yaw=gimbal_motort->gimbal_yaw_motor.relative_angle;
+        gimbal_motort->gimbal_yaw_motor.absolute_angle_set=gimbal_motort->gimbal_yaw_motor.absolute_angle+*add_yaw;
+    }else if(*add_yaw<0&&gimbal_motort->gimbal_yaw_motor.relative_angle+*add_yaw<0){
+        *add_yaw=-gimbal_motort->gimbal_yaw_motor.relative_angle;
+        gimbal_motort->gimbal_yaw_motor.absolute_angle_set=gimbal_motort->gimbal_yaw_motor.absolute_angle+*add_yaw;
+    }    
+
 
 }
 
