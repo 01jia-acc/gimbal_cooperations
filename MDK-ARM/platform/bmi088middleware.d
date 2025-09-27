@@ -1,6 +1,6 @@
-platform\bmi088middleware.o: ..\Core\Instance\BMI088Middleware.c
-platform\bmi088middleware.o: ..\Core\Instance\BMI088Middleware.h
-platform\bmi088middleware.o: ..\Core\Instance\struct_typedef.h
+platform\bmi088middleware.o: ..\Core\applications\communication_bond\BMI088Middleware.c
+platform\bmi088middleware.o: ..\Core\applications\communication_bond\BMI088Middleware.h
+platform\bmi088middleware.o: ../Core/Instance/struct_typedef.h
 platform\bmi088middleware.o: ../Core/Inc/main.h
 platform\bmi088middleware.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\bmi088middleware.o: ../Core/Inc/stm32f4xx_hal_conf.h

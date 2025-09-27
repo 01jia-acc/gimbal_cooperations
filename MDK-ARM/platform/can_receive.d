@@ -1,5 +1,5 @@
-platform\can_receive.o: ..\Core\Instance\CAN_receive.c
-platform\can_receive.o: ..\Core\Instance\CAN_receive.h
+platform\can_receive.o: ..\Core\applications\communication_bond\CAN_receive.c
+platform\can_receive.o: ..\Core\applications\communication_bond\CAN_receive.h
 platform\can_receive.o: ../Core/Inc/main.h
 platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\can_receive.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -34,6 +34,6 @@ platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 platform\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
-platform\can_receive.o: ..\Core\Instance\motor.h
+platform\can_receive.o: ..\Core\applications\algorithm\motor.h
 platform\can_receive.o: ../Core/Inc/config.h
-platform\can_receive.o: ..\Core\Instance\struct_typedef.h
+platform\can_receive.o: ../Core/Instance/struct_typedef.h

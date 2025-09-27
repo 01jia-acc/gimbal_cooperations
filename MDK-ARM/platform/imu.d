@@ -1,4 +1,4 @@
-platform\imu.o: ..\Core\Instance\imu.c
+platform\imu.o: ..\Core\applications\algorithm\imu.c
 platform\imu.o: ../Core/Inc/gpio.h
 platform\imu.o: ../Core/Inc/main.h
 platform\imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
@@ -35,6 +35,6 @@ platform\imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 platform\imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 platform\imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-platform\imu.o: ..\Core\Instance\BMI088driver.h
-platform\imu.o: ..\Core\Instance\struct_typedef.h
-platform\imu.o: ..\Core\Instance\imu.h
+platform\imu.o: ..\Core\applications\communication_bond\BMI088driver.h
+platform\imu.o: ../Core/Instance/struct_typedef.h
+platform\imu.o: ..\Core\applications\algorithm\imu.h

@@ -103,6 +103,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
            if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
             return;
            }else{
+            //信号量释放
             int_stop_time = 0;
             int_time = 0;
             GIMBAL_FLAG_RESET(GIMBAL_OFFSET_FLAG);

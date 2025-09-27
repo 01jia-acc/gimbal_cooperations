@@ -1,5 +1,5 @@
-platform\bsp_can.o: ..\Core\Instance\bsp_can.c
-platform\bsp_can.o: ..\Core\Instance\bsp_can.h
+platform\bsp_can.o: ..\Core\applications\communication_bond\bsp_can.c
+platform\bsp_can.o: ..\Core\applications\communication_bond\bsp_can.h
 platform\bsp_can.o: ../Core/Inc/main.h
 platform\bsp_can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\bsp_can.o: ../Core/Inc/stm32f4xx_hal_conf.h

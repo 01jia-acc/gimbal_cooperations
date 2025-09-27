@@ -1,5 +1,5 @@
-platform\pid.o: ..\Core\Instance\pid.c
-platform\pid.o: ..\Core\Instance\pid.h
+platform\pid.o: ..\Core\applications\algorithm\pid.c
+platform\pid.o: ..\Core\applications\algorithm\pid.h
 platform\pid.o: ../Core/Inc/main.h
 platform\pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\pid.o: ../Core/Inc/stm32f4xx_hal_conf.h

@@ -1,6 +1,6 @@
-platform\bsp_rc.o: ..\Core\Instance\bsp_rc.c
-platform\bsp_rc.o: ..\Core\Instance\bsp_rc.h
-platform\bsp_rc.o: ..\Core\Instance\struct_typedef.h
+platform\bsp_rc.o: ..\Core\applications\communication_bond\bsp_rc.c
+platform\bsp_rc.o: ..\Core\applications\communication_bond\bsp_rc.h
+platform\bsp_rc.o: ../Core/Instance/struct_typedef.h
 platform\bsp_rc.o: ../Core/Inc/main.h
 platform\bsp_rc.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\bsp_rc.o: ../Core/Inc/stm32f4xx_hal_conf.h

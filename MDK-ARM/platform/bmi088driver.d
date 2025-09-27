@@ -1,6 +1,6 @@
-platform\bmi088driver.o: ..\Core\Instance\BMI088driver.c
-platform\bmi088driver.o: ..\Core\Instance\BMI088driver.h
-platform\bmi088driver.o: ..\Core\Instance\struct_typedef.h
+platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088driver.c
+platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088driver.h
+platform\bmi088driver.o: ../Core/Instance/struct_typedef.h
 platform\bmi088driver.o: ../Core/Inc/main.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\bmi088driver.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -35,5 +35,5 @@ platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
-platform\bmi088driver.o: ..\Core\Instance\BMI088reg.h
-platform\bmi088driver.o: ..\Core\Instance\BMI088Middleware.h
+platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088reg.h
+platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088Middleware.h

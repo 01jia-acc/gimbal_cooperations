@@ -1,7 +1,7 @@
-platform\remote_control.o: ..\Core\Instance\remote_control.c
-platform\remote_control.o: ..\Core\Instance\remote_control.h
-platform\remote_control.o: ..\Core\Instance\struct_typedef.h
-platform\remote_control.o: ..\Core\Instance\bsp_rc.h
+platform\remote_control.o: ..\Core\applications\communication_bond\remote_control.c
+platform\remote_control.o: ..\Core\applications\communication_bond\remote_control.h
+platform\remote_control.o: ../Core/Instance/struct_typedef.h
+platform\remote_control.o: ..\Core\applications\communication_bond\bsp_rc.h
 platform\remote_control.o: ../Core/Inc/main.h
 platform\remote_control.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\remote_control.o: ../Core/Inc/stm32f4xx_hal_conf.h

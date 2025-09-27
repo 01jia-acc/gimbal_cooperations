@@ -1,5 +1,5 @@
-platform\motor.o: ..\Core\Instance\motor.c
-platform\motor.o: ..\Core\Instance\motor.h
+platform\motor.o: ..\Core\applications\algorithm\motor.c
+platform\motor.o: ..\Core\applications\algorithm\motor.h
 platform\motor.o: ../Core/Inc/main.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\motor.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -35,4 +35,9 @@ platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 platform\motor.o: ../Core/Inc/config.h
-platform\motor.o: ..\Core\Instance\struct_typedef.h
+platform\motor.o: ../Core/Instance/struct_typedef.h
+platform\motor.o: ..\Core\applications\Gimbal\gimbal.h
+platform\motor.o: ..\Core\applications\communication_bond\CAN_receive.h
+platform\motor.o: ..\Core\applications\communication_bond\remote_control.h
+platform\motor.o: ..\Core\applications\communication_bond\bsp_rc.h
+platform\motor.o: ..\Core\applications\algorithm\pid.h
