@@ -21,7 +21,7 @@ typedef struct
     float output_Position;
 }Motor_send;
 extern Motor_send *motor_ready[MOTOR_NUM];
-
+extern Motor_list *motor_data[MOTOR_NUM];
 void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
 
 #endif /* __MOTOR_H */

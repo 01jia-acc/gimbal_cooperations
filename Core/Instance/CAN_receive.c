@@ -184,5 +184,6 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
 }
 
 void Can_Send(void){
-  CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
+  //CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
+  CAN_cmd_gimbal(motor_ready[MOTOR_YAW]->output,motor_ready[MOTOR_PITCH]->output,0,0)
 }
