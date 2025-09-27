@@ -73,12 +73,12 @@ void MX_FREERTOS_Init(void);
 
 //定时器2中断回调函数，获取欧拉角（TIM2 callback，get Euler angles）
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim==&htim2){
-		IMU_getEuleranAngles();
-		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
-	}
-}
+// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+// 	if (htim==&htim2){
+// 		IMU_getEuleranAngles();
+// 		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
+// 	}
+// }
 
 
 /* USER CODE END 0 */

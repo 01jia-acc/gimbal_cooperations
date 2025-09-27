@@ -2,6 +2,9 @@
 #include <math.h>
 #include "BMI088driver.h"
 #include "imu.h"
+#include "Gimbal.h"
+#include "FreeRTOS.h"
+#include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
 
 #define kp 				25.00f
 #define ki 				0.005f
@@ -150,9 +153,10 @@ void IMU_Calibration(void){
 	}
 }
 
-void IMU_getEuleranAngles(void)
+void INS(void)
 {
-	
+	//设置信号量
+	if(g_xSemTicks==1){
 	IMU_GetValues();
 	IMU_Calibration();
 	IMU_AHRSupdate(&imu_data);
@@ -161,4 +165,5 @@ void IMU_getEuleranAngles(void)
 	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
 
 	imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
+}
 }

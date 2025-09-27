@@ -6,10 +6,13 @@
 #include "CAN_receive.h"
 #include <math.h>
 
+
 uint8_t   GIMBAL_OFFSET_FLAG=1; //云台标志位
 gimbal_control_t gimbal_control;
 float add_yaw;
 float add_pitch;
+SemaphoreHandle_t g_xSemTicks;
+
 void Gimbal_task(void){
     //等待陀螺仪任务更新陀螺仪数据
     //wait a time
@@ -21,7 +24,7 @@ void Gimbal_task(void){
         gimbal_detact_calibration(&gimbal_control);
         gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
         //以absolute_angle_set为目标值，absolute_angle（既motor_chassis[0].ecd）为当前值，进行pid串级环的运算，并将值存到motor_ready[0]结构体中
-
+        Motor_Calc(&gimbal_control);
     }
     
 
@@ -51,18 +54,26 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
 
 //云台更新数据
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch){
-    feedback_update->gimbal_pitch_motor.absolute_angle=motor_chassis[0].ecd;
-    feedback_update->gimbal_yaw_motor.absolute_angle=motor_chassis[1].ecd;
+
+    //更新电机实时角度
+    feedback_update->gimbal_pitch_motor.motor_gyro=motor_chassis[0].ecd;
+    feedback_update->gimbal_yaw_motor.motor_gyro=motor_chassis[1].ecd;
+
+    //更新姿态角实时角度
+    feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
+    feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
+
+    //更新遥控器实时角度
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
     *add_yaw=feedback_update->gimbal_rc_ctrl->rc.ch[0];
-    *add_pitch=feedback_update->gimbal_rc_ctrl->rc.ch[3];
-    
-    feedback_update->gimbal_pitch_motor.absolute_angle_set=feedback_update->gimbal_pitch_motor.absolute_angle+*add_pitch;
-    feedback_update->gimbal_yaw_motor.absolute_angle_set=feedback_update->gimbal_yaw_motor.absolute_angle+*add_yaw;
+    *add_pitch=feedback_update->gimbal_rc_ctrl->rc.ch[1];
+    //更新电机目标机械角度
+    feedback_update->gimbal_pitch_motor.motor_gyro_set=feedback_update->gimbal_pitch_motor.motor_gyro+*add_pitch;
+    feedback_update->gimbal_yaw_motor.motor_gyro_set=feedback_update->gimbal_yaw_motor.motor_gyro+*add_yaw;
 
     //计算设置角度后的目标角度与中值的相对角度，并以此为标准，因为最大和最小限幅值也是根据相对角度来定的，这样避免目标角度出现负值
-    feedback_update->gimbal_pitch_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.absolute_angle_set,0);
-    feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.absolute_angle_set,0);
+    feedback_update->gimbal_pitch_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro_set,0);
+    feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
     if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight>0)
@@ -81,13 +92,14 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
     //添加标志位判断有无执行过归中，如果有，则不再归中
     if(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
+        g_xSemTicks=xSemaphoreCreateBinary( );
         static uint16_t int_time=0;
         static uint16_t int_stop_time=0;
         MotorSetTar(motor_ready[0], 0.0f, ABS);  
         MotorSetTar(motor_ready[1], 0.0f, ABS);
         int_time++;
-        if(fabs(gimbal_motort->gimbal_pitch_motor.absolute_angle-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR&&
-           fabs(gimbal_motort->gimbal_yaw_motor.absolute_angle-INIT_YAW_SET)<GIMBAL_INIT_ANGLE_ERROR){
+        if(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR&&
+           fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-INIT_YAW_SET)<GIMBAL_INIT_ANGLE_ERROR){
             if(int_stop_time<GIMBAL_INIT_STOP_TIME){
             int_stop_time++;
             }
@@ -104,6 +116,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
             return;
            }else{
             //信号量释放
+            xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
             int_time = 0;
             GIMBAL_FLAG_RESET(GIMBAL_OFFSET_FLAG);

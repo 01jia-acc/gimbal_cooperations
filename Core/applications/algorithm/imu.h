@@ -38,6 +38,7 @@ extern uint8_t   SENSER_OFFSET_FLAG; //标志位组
 				float gY;
 				float gZ;
 			}offset;
+			
      		extern offset imu_offset;
 			extern param_Angle imu_Angle;
 

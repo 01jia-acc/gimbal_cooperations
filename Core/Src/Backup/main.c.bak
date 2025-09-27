@@ -47,7 +47,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 uint8_t a;
-const RC_ctrl_t *local_rc_ctrl;
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -70,6 +70,9 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//定时器2中断回调函数，获取欧拉角（TIM2 callback，get Euler angles）
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if (htim==&htim2){
 		IMU_getEuleranAngles();
@@ -117,6 +120,8 @@ int main(void)
   MX_CAN1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  //BMI088初始化
 while(BMI088_init())
   {
       ;
@@ -126,6 +131,7 @@ while(BMI088_init())
   can_filter_init();
 	HAL_TIM_Base_Start_IT(&htim2);
   local_rc_ctrl = get_remote_control_point();
+  
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
@@ -143,7 +149,7 @@ while(BMI088_init())
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		vofa_demo2(imu_Angle.Yaw,imu_Angle.Pitch,&huart6);
+		vofa_demo2(imu_Angle.Yaw,imu_Angle.Pitch,&huart6); //VOFA调试信息输出
 		
   }
   /* USER CODE END 3 */

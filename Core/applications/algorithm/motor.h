@@ -3,6 +3,7 @@
 #include "main.h"
 #include "config.h"
 #include "struct_typedef.h"
+#include "Gimbal.h"
 //接收电机结构体
 typedef struct 
 {
@@ -20,8 +21,9 @@ typedef struct
     float output;
     float output_Position;
 }Motor_send;
+
 extern Motor_send *motor_ready[MOTOR_NUM];
 extern Motor_list *motor_data[MOTOR_NUM];
 void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
-
+void Motor_Calc(gimbal_control_t *feedback_update);
 #endif /* __MOTOR_H */
