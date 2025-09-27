@@ -48,7 +48,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+osThreadId VPCHandle;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId can_send_motorHandle;
@@ -108,22 +108,28 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
+  
+  
+
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
+    /* definition and creation of VPC task */
+    osThreadDef(VPC, VPC_Task, osPriorityAboveNormal, 0, 128);
+    VPCHandle = osThreadCreate(osThread(VPC), NULL);
   /* definition and creation of can_send_motor */
-  osThreadDef(can_send_motor, Can_Send, osPriorityIdle, 0, 128);
+  osThreadDef(can_send_motor, Can_Send, osPriorityNormal, 0, 128);
   can_send_motorHandle = osThreadCreate(osThread(can_send_motor), NULL);
 
   /* definition and creation of Gimbal */
-  osThreadDef(Gimbal, Gimbal_task, osPriorityIdle, 0, 128);
+  osThreadDef(Gimbal, Gimbal_task, osPriorityHigh, 0, 128);
   GimbalHandle = osThreadCreate(osThread(Gimbal), NULL);
+
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -146,5 +152,35 @@ void StartDefaultTask(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+ void VPC_Receive(void)
+ {
+   
+    UnPack_Data_ROS2(buf_receive_from_nuc, &aim_packet_from_nuc, (sizeof(aim_packet_from_nuc)+1));
+    
+    chassis_cmd.vy=aim_packet_from_nuc.vy;
+    gimbal_cmd.v_yaw=aim_packet_from_nuc.v_yaw;
+ }
+ 
+ 
+
+void VPC_Init(void)
+{
+  aim_packet_to_nuc.detect_color=0;//1-blue 0-red
+  Send_Packet_Init(&aim_packet_to_nuc);
+
+}
+
+void VPC_Task(void *argument)
+{
+   VPC_Init();
+   uint32_t lastWakeTime = osKernelGetTickCount();
+   for(;;)
+    {
+        VPC_Receive();
+        Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
+        osDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
+    }
+
+}
 
 /* USER CODE END Application */
