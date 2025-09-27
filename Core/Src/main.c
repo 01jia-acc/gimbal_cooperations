@@ -149,7 +149,7 @@ while(BMI088_init())
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		vofa_demo2(imu_Angle.Yaw,imu_Angle.Pitch,&huart6); //VOFA调试信息输出
+
 		
   }
   /* USER CODE END 3 */
