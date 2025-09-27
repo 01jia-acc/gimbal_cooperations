@@ -29,6 +29,8 @@
 #include "motor.h"
 #include "Gimbal.h"
 #include "remote_control.h"
+#include "Serial.h"
+#include "VPC.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -152,23 +154,6 @@ void StartDefaultTask(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
- void VPC_Receive(void)
- {
-   
-    UnPack_Data_ROS2(buf_receive_from_nuc, &aim_packet_from_nuc, (sizeof(aim_packet_from_nuc)+1));
-    
-    chassis_cmd.vy=aim_packet_from_nuc.vy;
-    gimbal_cmd.v_yaw=aim_packet_from_nuc.v_yaw;
- }
- 
- 
-
-void VPC_Init(void)
-{
-  aim_packet_to_nuc.detect_color=0;//1-blue 0-red
-  Send_Packet_Init(&aim_packet_to_nuc);
-
-}
 
 void VPC_Task(void *argument)
 {
