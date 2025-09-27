@@ -1,6 +1,7 @@
 // 在 Gimbal.h 开头添加
 #ifndef GIMBAL_H  // 如果未定义 GIMBAL_H
 #define GIMBAL_H  // 定义 GIMBAL_H，防止重复包含
+
 #include "FreeRTOS.h"
 #include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
 #include "CAN_receive.h"
