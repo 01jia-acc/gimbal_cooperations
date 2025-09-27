@@ -14,6 +14,7 @@ float add_pitch;
 SemaphoreHandle_t g_xSemTicks;
 
 void Gimbal_task(void){
+	g_xSemTicks=xSemaphoreCreateBinary( );
     //等待陀螺仪任务更新陀螺仪数据
     //wait a time
     vTaskDelay(GIMBAL_TASK_INIT_TIME);
@@ -92,7 +93,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
     //添加标志位判断有无执行过归中，如果有，则不再归中
     if(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
-        g_xSemTicks=xSemaphoreCreateBinary( );
+        
         static uint16_t int_time=0;
         static uint16_t int_stop_time=0;
         MotorSetTar(motor_ready[0], 0.0f, ABS);  

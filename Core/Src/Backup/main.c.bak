@@ -24,6 +24,7 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
+#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -37,6 +38,7 @@
 #include "CAN_receive.h"
 #include "bsp_can.h"
 #include "remote_control.h"
+#include "usb_otg.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,12 +75,12 @@ void MX_FREERTOS_Init(void);
 
 //定时器2中断回调函数，获取欧拉角（TIM2 callback，get Euler angles）
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if (htim==&htim2){
-		IMU_getEuleranAngles();
-		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
-	}
-}
+// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+// 	if (htim==&htim2){
+// 		IMU_getEuleranAngles();
+// 		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
+// 	}
+// }
 
 
 /* USER CODE END 0 */
@@ -119,6 +121,7 @@ int main(void)
   MX_USART6_UART_Init();
   MX_CAN1_Init();
   MX_USART3_UART_Init();
+  MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
   //BMI088初始化
@@ -149,7 +152,7 @@ while(BMI088_init())
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		vofa_demo2(imu_Angle.Yaw,imu_Angle.Pitch,&huart6); //VOFA调试信息输出
+
 		
   }
   /* USER CODE END 3 */
@@ -176,10 +179,10 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 6;
-  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLM = 25;
+  RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();

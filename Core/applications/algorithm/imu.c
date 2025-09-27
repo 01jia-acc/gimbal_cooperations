@@ -156,7 +156,7 @@ void IMU_Calibration(void){
 void INS(void)
 {
 	//设置信号量
-	if(g_xSemTicks==1){
+	if (xSemaphoreTake(g_xSemTicks, portMAX_DELAY)) {
 	IMU_GetValues();
 	IMU_Calibration();
 	IMU_AHRSupdate(&imu_data);

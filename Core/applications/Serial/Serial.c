@@ -128,13 +128,13 @@ uint16_t Get_CRC16_Check_Sum(uint8_t* pchMessage,uint32_t dwLength, uint16_t wCR
 void Send_Packet_Init(send_packet_t *send_packet)
 {
      send_packet->header = 0x5A;
-     send_packet->task_mode = TASK_MODE;
+    //  send_packet->task_mode = TASK_MODE;
      send_packet->reset_tracker = 0;
      send_packet->is_play = 1;
      send_packet->change_target = 0;
-     send_packet-> roll = imu_list[0]->angle[1];
-     send_packet-> pitch = imu_list[0]->angle[2];
-     send_packet-> yaw = imu_list[0]->angle[0];
+    //  send_packet-> roll = imu_list[0]->angle[1];
+     send_packet-> pitch = imu_Angle.Pitch;
+     send_packet-> yaw = imu_Angle.Yaw;
 }
 
 

@@ -1,6 +1,4 @@
 #include "motor.h"
-#include "config.h"
-#include "gimbal.h"
 #include "pid.h"
 Motor_send *motor_ready[MOTOR_NUM];
 Motor_list *motor_data[MOTOR_NUM];

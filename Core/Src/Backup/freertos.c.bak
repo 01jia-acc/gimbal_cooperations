@@ -55,6 +55,7 @@ osThreadId VPCHandle;
 osThreadId defaultTaskHandle;
 osThreadId can_send_motorHandle;
 osThreadId GimbalHandle;
+osThreadId IMU_slovingHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -63,7 +64,8 @@ osThreadId GimbalHandle;
 
 void StartDefaultTask(void const * argument);
 extern void Can_Send(void const * argument);
-
+extern void Gimbal_task(void const * argument);
+extern void INS(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -110,28 +112,26 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  
-  
-
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-    /* definition and creation of VPC task */
-    osThreadDef(VPC, VPC_Task, osPriorityAboveNormal, 0, 128);
-    VPCHandle = osThreadCreate(osThread(VPC), NULL);
   /* definition and creation of can_send_motor */
-  osThreadDef(can_send_motor, Can_Send, osPriorityNormal, 0, 128);
+  osThreadDef(can_send_motor, Can_Send, osPriorityIdle, 0, 128);
   can_send_motorHandle = osThreadCreate(osThread(can_send_motor), NULL);
 
   /* definition and creation of Gimbal */
-  osThreadDef(Gimbal, Gimbal_task, osPriorityHigh, 0, 128);
+  osThreadDef(Gimbal, Gimbal_task, osPriorityIdle, 0, 128);
   GimbalHandle = osThreadCreate(osThread(Gimbal), NULL);
 
+  /* definition and creation of IMU_sloving */
+  osThreadDef(IMU_sloving, INS, osPriorityLow, 0, 128);
+  IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */

@@ -33,6 +33,9 @@ platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h
 platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
+platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
+platform\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 platform\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 platform\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 platform\main.o: ../Core/Inc/FreeRTOSConfig.h
@@ -52,6 +55,12 @@ platform\main.o: ../Core/Inc/dma.h
 platform\main.o: ../Core/Inc/spi.h
 platform\main.o: ../Core/Inc/tim.h
 platform\main.o: ../Core/Inc/usart.h
+platform\main.o: ../USB_DEVICE/App/usb_device.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h
+platform\main.o: ../USB_DEVICE/Target/usbd_conf.h
+platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 platform\main.o: ../Core/Inc/gpio.h
 platform\main.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\main.o: ../Core/Instance/struct_typedef.h
@@ -68,3 +77,9 @@ platform\main.o: ../Core/applications/communication_bond/bsp_rc.h
 platform\main.o: ../Core/applications/algorithm/pid.h
 platform\main.o: ../Core/applications/communication_bond/CAN_receive.h
 platform\main.o: ../Core/applications/communication_bond/bsp_can.h
+platform\main.o: ../USB_DEVICE/App/usbd_cdc_if.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
+platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
