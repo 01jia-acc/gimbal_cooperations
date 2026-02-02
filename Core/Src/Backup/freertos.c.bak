@@ -63,6 +63,8 @@ osThreadId can_send_motorHandle;
 osThreadId GimbalHandle;
 osThreadId IMU_slovingHandle;
 
+
+
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
@@ -73,6 +75,7 @@ extern void Can_Send(void const * argument);
 extern void Gimbal_task(void);
 extern void INS_Calculate(void);
 extern void VPC_Task(void * argument);
+
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -140,8 +143,8 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of IMU_sloving */
   osThreadDef(IMU_sloving, INS_Calculate, osPriorityLow, 0, 128);
   IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
-	
-	/* definition and creation of VPC_sloving */
+
+  /* definition and creation of VPC_sloving */
   osThreadDef(VPC_sloving, VPC_Task, osPriorityLow, 0, 128);
   VPCHandle = osThreadCreate(osThread(VPC_sloving), NULL);
 
@@ -170,6 +173,8 @@ void StartDefaultTask(void const * argument)
   }
   /* USER CODE END StartDefaultTask */
 }
+
+
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */

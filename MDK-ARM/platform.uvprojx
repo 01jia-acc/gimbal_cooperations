@@ -1839,11 +1839,6 @@
               <FilePath>..\Core\applications\algorithm\imu.c</FilePath>
             </File>
             <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\applications\algorithm\motor.c</FilePath>
-            </File>
-            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\applications\algorithm\pid.c</FilePath>
@@ -1902,6 +1897,11 @@
               <FileName>remote_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\applications\communication_bond\remote_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\applications\communication_bond\motor.c</FilePath>
             </File>
           </Files>
         </Group>

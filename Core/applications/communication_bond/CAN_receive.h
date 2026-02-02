@@ -37,8 +37,8 @@ typedef enum
     CAN_3508_M4_ID = 0x204,
 
     CAN_YAW_MOTOR_ID = 0x205,
-    CAN_PIT_MOTOR_ID = 0x206,
-    CAN_TRIGGER_MOTOR_ID = 0x207,
+    CAN_PIT_MOTOR_ID = 0x207,
+    CAN_TRIGGER_MOTOR_ID = 0x206,
     CAN_GIMBAL_ALL_ID = 0x1FF,
 
 } can_msg_id_e;
@@ -64,7 +64,7 @@ typedef struct
   * @param[in]      rev: (0x208) 保留，电机控制电流
   * @retval         none
   */
-extern void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
+extern void CAN_cmd_gimbal(int16_t yaw, int16_t shoot, int16_t pitch, int16_t rev);
 
 /**
   * @brief          发送ID为0x700的CAN包,它会设置3508电机进入快速设置ID

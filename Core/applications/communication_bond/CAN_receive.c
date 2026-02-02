@@ -68,12 +68,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		        case CAN_PIT_MOTOR_ID:
 		        	get_motor_measure(&motor_data[1], rx_data);
 		        	break;
-		        case CAN_3508_M1_ID:
-		        	get_motor_measure(&motor_data[1], rx_data);
-		        	break;
-		        case CAN_3508_M4_ID:
-		        	get_motor_measure(&motor_data[1], rx_data);
-		        	break;
+//		        case CAN_3508_M1_ID:
+//		        	get_motor_measure(&motor_data[1], rx_data);
+//		        	break;
+//		        case CAN_3508_M4_ID:
+//		        	get_motor_measure(&motor_data[1], rx_data);
+//		        	break;
 		        default:
 		                {
 		                    break;
@@ -111,7 +111,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   * @param[in]      rev: (0x208) 保留，电机控制电流
   * @retval         none
   */
-void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev)
+void CAN_cmd_gimbal(int16_t yaw, int16_t shoot, int16_t pitch, int16_t rev)
 {
     uint32_t send_mail_box;
     gimbal_tx_message.StdId = 0x1FF;
@@ -120,10 +120,10 @@ void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev)
     gimbal_tx_message.DLC = 0x08;
     gimbal_can_send_data[0] = (yaw >> 8);
     gimbal_can_send_data[1] = yaw;
-    gimbal_can_send_data[2] = (pitch >> 8);
-    gimbal_can_send_data[3] = pitch;
-    gimbal_can_send_data[4] = (shoot >> 8);
-    gimbal_can_send_data[5] = shoot;
+    gimbal_can_send_data[2] = (shoot >> 8);
+    gimbal_can_send_data[3] = shoot;
+    gimbal_can_send_data[4] = (pitch >> 8);
+    gimbal_can_send_data[5] = pitch;
     gimbal_can_send_data[6] = (rev >> 8);
     gimbal_can_send_data[7] = rev;
     HAL_CAN_AddTxMessage(&GIMBAL_CAN, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
@@ -187,7 +187,7 @@ void Can_Send(void){
   while(1){
   //CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
 
-	CAN_cmd_gimbal(motor_ready[0].output,motor_ready[1].output,0,0);
+	CAN_cmd_gimbal(motor_ready[0].output,0,motor_ready[1].output,0);
 
   vofa_demo3(motor_data[0].angle,motor_ready[0].target,motor_ready[1].target,&huart6);
 

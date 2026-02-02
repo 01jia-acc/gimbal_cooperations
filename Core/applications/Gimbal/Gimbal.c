@@ -38,19 +38,23 @@ void Gimbal_task(void){
     while (1)
     {
 
-      gimbal_control.Ctl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
-
+      gimbal_control.Ctl_mode=1;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
+      
 
       if (gimbal_control.Ctl_mode==1)//远程操控模式
 		  {
             gimbal_detact_calibration(&gimbal_control);
             gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch,gimbal_control.Ctl_mode);
+            if(gimbal_control.gimbal_rc_ctrl->rc.s[0]==1)
+							HAL_GPIO_WritePin(laser_GPIO_Port, laser_Pin, GPIO_PIN_SET);
+						else
+							HAL_GPIO_WritePin(laser_GPIO_Port, laser_Pin, GPIO_PIN_RESET);
             gimbal_set_tar(&gimbal_control,&add_yaw,&add_pitch);
             //以absolute_angle_set为目标值，absolute_angle为当前值，进行pid串级环的运算，并将值存到motor_ready[]结构体中
             Motor_Calc(&gimbal_control);
        }
 
-       else if (gimbal_control.Ctl_mode==0)//视觉自动模式
+       else if (gimbal_control.Ctl_mode==0)//视觉自动模式//todo当锁定无人机发射激光
        {
            temp_data.yaw=msp(aim_packet_from_nuc.yaw,-pi,pi,-180,180);
            temp_data.pitch=msp(aim_packet_from_nuc.pitch,-pi,pi,-90,90);
@@ -104,9 +108,9 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
     //获取遥控器输入值并映射为目标角度值
-	  *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
-    *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
-    
+	  *add_yaw=-msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);//待修改
+    *add_pitch=-msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);		
+		
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
     feedback_update->gimbal_yaw_motor.absolute_angle_set=*add_yaw;
 
@@ -183,47 +187,71 @@ void gimbal_set_tar(gimbal_control_t *gimbal_motort,float *add_yaw,float *add_pi
 	 //pitch
 
     //根据当前输入值的正负来判断处于左值还是右值，从而决定目标值,并且加上一个死区，防止频繁切换
-    if(*add_pitch<0){
-        if(gimbal_motort->gimbal_pitch_motor.absolute_angle<=-40){
+    if(*add_pitch<0)//-40
+			{
+        if(gimbal_motort->gimbal_pitch_motor.absolute_angle<=(PITCH_Limit_Hight+4))//为边界粗略写的死区，下同
+					{
             MotorSetTar(&motor_ready[MOTOR_PITCH],PITCH_Limit_Hight,ABS);
-
-    }else{
-        MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
-    }
-    }else if(*add_pitch>0){
-        if(gimbal_motort->gimbal_pitch_motor.absolute_angle>=35){
-                MotorSetTar(&motor_ready[MOTOR_PITCH],PITCH_Limit_Low,ABS);
-    }else{
-				MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
-    }
-}   else{
-				MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
-}
+          }
+				else
+					{
+            MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+          }
+      }
+		else if(*add_pitch>0)//25
+			{
+        if(gimbal_motort->gimbal_pitch_motor.absolute_angle>=(PITCH_Limit_Low-1.5))
+					{
+            MotorSetTar(&motor_ready[MOTOR_PITCH],PITCH_Limit_Low,ABS);
+          }
+					else
+					{
+				    MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+          }
+      }   
+		else
+			{
+ 				MotorSetTar(&motor_ready[MOTOR_PITCH],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+      }
 
 
     //yaw
-    if(*add_yaw<0){
-        if(*add_yaw<=-90){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-90){
-            MotorSetTar(&motor_ready[MOTOR_YAW],YAW_Limit_Low,ABS);
-        }
-    }else{
-        MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
-    }
-    }else if(*add_yaw>0){
-        if(*add_yaw>=90){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=90){
-                MotorSetTar(&motor_ready[MOTOR_YAW],YAW_Limit_Hight,ABS);
-        }
-    else{
+    if(*add_yaw<0)
+			{
+        if(*add_yaw<=YAW_Limit_Low)//-90
+					{
+           if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=(YAW_Limit_Low+3))
+						 {
+               MotorSetTar(&motor_ready[MOTOR_YAW],YAW_Limit_Low,ABS);
+             }
+          }
+					else
+					{
+               MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
+          }
+      }
+		 else if(*add_yaw>0)
+			{
+        if(*add_yaw>=YAW_Limit_Hight)//90
+					{
+              if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=(YAW_Limit_Hight-3))
+								{
+                  MotorSetTar(&motor_ready[MOTOR_YAW],YAW_Limit_Hight,ABS);
+                }
+							else
+								{
+									MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
+								}
+				  }
+			  else
+					{
+				    MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
+          }
+       }
+		else
+			{
 				MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
-    }
-				}else{
-				MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
-    }
-}else{
-				MotorSetTar(&motor_ready[MOTOR_YAW],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
-}
+			}
 
 
 }
